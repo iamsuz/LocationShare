@@ -24,18 +24,29 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
+import MapView from 'react-native-maps';
+
 // Main Application
 
 const App = () => {
   return (
-    <SafeAreaView>
-      <Text>Demo App</Text>
-    </SafeAreaView>  
+    // Viewing a user a full map
+      <MapView
+      style={styles.map}
+        initialRegion={{
+        latitude: 37.78825,
+        longitude: -122.4324,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+        }}
+  />
   )
 };
 
 const styles = StyleSheet.create({
-  
+  map:{
+    height: '100%'
+  }
 });
 
 export default App;
