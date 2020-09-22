@@ -6,73 +6,33 @@
  * @flow strict-local
  */
 
+import 'react-native-gesture-handler';
 import React, {useEffect} from 'react';
+import { NavigationContainer } from '@react-navigation/native';
 import {
   SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-  Platform
+  StyleSheet
 } from 'react-native';
 
-import {request,PERMISSION, PERMISSIONS} from 'react-native-permissions'
+import Welcome from './component/Welcome';
+import Map from './component/Map';
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
 
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
-import Geolocation from '@react-native-community/geolocation';
+import { createStackNavigator } from '@react-navigation/stack';
 
 // Main Application
 
+const Stack = createStackNavigator();
+
 const App = () => {
 
-
-  useEffect(()=>{
-    // calls the rerquest method on load
-    requestLocationPermission();
-  },[])
-
-  // Requests the permission access to use the location when in use
-  requestLocationPermission = async() =>{
-    if(Platform.OS === 'ios'){
-      var response = await request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE)
-
-      console.log('iPhone' + response)
-      if(response === 'granted'){
-        locateCurrentPosition();
-      }
-
-    }
-  }
-  // Locates the current position of the user
-  locateCurrentPosition = () =>{
-    Geolocation.getCurrentPosition(
-      position =>{
-        console.log(JSON.stringify(position))
-      }
-    )
-  }
-
   return (
-    // Viewing a user a full map
-      <MapView
-        showsUserLocation={true}
-        style={styles.map}
-        initialRegion={{
-        latitude: 37.78825,
-        longitude: -122.4324,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-        }}
-  />
+    <NavigationContainer>{
+    <Stack.Navigator initialRouteName="Welcome"  swipeEnabled= 'false'>
+      <Stack.Screen name="Welcome" component={Welcome} />
+      <Stack.Screen name="Map" component={Map} />
+    </Stack.Navigator>
+}</NavigationContainer>
   )
 };
 
