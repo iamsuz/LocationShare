@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import React, {useEffect} from 'react';
+import React, {useEffect,useRef,useState} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -15,7 +15,8 @@ import {
   Text,
   StatusBar,
   Platform,
-  Alert
+  Alert,
+  AppState
 } from 'react-native';
 
 import {request,PERMISSION, PERMISSIONS} from 'react-native-permissions'
@@ -31,20 +32,62 @@ import {
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 
+import Pusher from 'pusher-js/react-native';
+
 // Main Application
+
 
 const Map = ({navigation}) => {
 
-  const [initialPosition, setInitialPosition] = React.useState({
+
+    // check the app is in forground or background
+    const appState = useRef(AppState.currentState);
+    const [appStateVisible, setAppStateVisible] = useState(appState.current);
+
+  const [initialPosition, setInitialPosition] = useState({
     latitude: 37.78825,
     longitude: -122.4324,
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   })
+  
 
   useEffect(()=>{
+    AppState.addEventListener("change", _handleAppStateChange);
+
+    return () => {
+      AppState.removeEventListener("change", _handleAppStateChange);
+    };
+    // call the for the request permission of the location
     requestLocationPermission()
+
+    // Enable pusher logging - don't include this in production
+    Pusher.logToConsole = true;
+
+    var pusher = new Pusher('868cdae3d3ff85b9cf73', {
+    cluster: 'ap1'
+    });
+    var channel = pusher.subscribe('my-channel');
+    channel.bind('my-event', function(data) {
+    alert(JSON.stringify(data));
+    });
+    
   },[])
+
+
+  const _handleAppStateChange = (nextAppState) => {
+    if (
+      appState.current.match(/inactive|background/) &&
+      nextAppState === "active"
+    ) {
+      console.log("App has come to the foreground!");
+    }
+
+    appState.current = nextAppState;
+    setAppStateVisible(appState.current);
+    console.log("AppState", appState.current);
+  };
+
 
   // Requests the permission access to use the location when in use
   requestLocationPermission = async() =>{
@@ -77,7 +120,6 @@ const Map = ({navigation}) => {
     )
   }
 
-  console.log(initialPosition)
 
   return (
     <MapView

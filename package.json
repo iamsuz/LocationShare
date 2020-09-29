@@ -2,6 +2,7 @@
   "name": "LocationShare",
   "version": "0.0.1",
   "private": true,
+  "proxy": "http://10.0.2.2:3000",
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
@@ -10,10 +11,13 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@react-native-community/async-storage": "^1.12.0",
     "@react-native-community/geolocation": "^2.0.2",
     "@react-native-community/masked-view": "^0.1.10",
+    "@react-native-community/netinfo": "^5.9.7",
     "@react-navigation/native": "^5.7.3",
     "@react-navigation/stack": "^5.9.0",
+    "pusher-js": "^7.0.0",
     "react": "16.13.1",
     "react-native": "0.63.2",
     "react-native-gesture-handler": "^1.8.0",
